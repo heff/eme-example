@@ -1,6 +1,6 @@
 var vid = document.getElementById('vid');
 var mediaSource = new MediaSource();
-var vidFolder = 'zen-no-enc';
+var vidFolder = 'zen-cenc';
 
 function onLoad() {
   var video = document.getElementById("vid");
@@ -22,7 +22,7 @@ function onLoad() {
         promise.then(
           function(createdMediaKeys) {
             var initData = { 
-              "kids": [ "ZDU3ZDQxNmNjZDQ1NGQ1YTA4ZDA1YmZmMDc0MmVlNzY" ], 
+              "kids": [ "1X1BbM1FTVoI0Fv/B0Ludg" ], 
               "type": "temporary" 
             };
             initData = JSON.stringify(initData);
@@ -52,8 +52,13 @@ function handleMessage(event) {
       { 
         "kty":"oct",
         "alg":"A128KW",
-        "k": "ZjE1Y2FlOGY0ZTQ4YTAyMzA1NmUxOTYwZmYyMjI4YjA",
-        "kid": "ZDU3ZDQxNmNjZDQ1NGQ1YTA4ZDA1YmZmMDc0MmVlNzY"
+        // Zencoder had a hex encoded version of the string by default
+        // but here we need a base64url encoded version of the original key.
+        // Had to use a hex to base64 converter, and then manually url encode it
+        // by dropping the equal signs at the end. Might not be enough for all keys.
+        // http://tomeko.net/online_tools/hex_to_base64.php?lang=en
+        "k": "8Vyuj05IoCMFbhlg/yIosA",
+        "kid": "1X1BbM1FTVoI0Fv/B0Ludg"
       }
     ],
     "type":"temporary" 
@@ -142,7 +147,7 @@ function GET(url, callback) {
 }
 
 function str2ab(str) {
-  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+  var buf = new ArrayBuffer(str.length); // 2 bytes for each char
   var bufView = new Uint8Array(buf);
   for (var i=0, strLen=str.length; i<strLen; i++) {
     bufView[i] = str.charCodeAt(i);
